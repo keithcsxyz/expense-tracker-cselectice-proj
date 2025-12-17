@@ -7,7 +7,7 @@
     </div>
     <div class="col-12 col-md-8 d-flex justify-content-md-end">
       <form method="get" class="filter-form d-flex flex-wrap gap-2 align-items-center justify-content-end">
-        <label class="mb-0 d-flex align-items-center">Month <input class="form-control form-control-sm ms-2" type="month" name="month" value="{{ month }}"></label>
+          <label class="mb-0 d-flex align-items-center">Month <input class="form-control form-control-sm ms-2" type="month" name="month" value="{{ month|default_if_none:'' }}"></label>
         <button class="btn btn-sm" type="submit">Filter</button>
         <a class="btn btn-sm" href="{% url 'expenses:export_csv' %}{% if month %}?month={{ month }}{% endif %}">Export CSV</a>
       </form>
