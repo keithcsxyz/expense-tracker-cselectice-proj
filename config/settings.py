@@ -27,7 +27,16 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-9t7z$fj+6wm@4z
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() in ('1', 'true', 'yes')
 
 # ALLOWED_HOSTS can be set via env var (comma-separated), otherwise allow localhost for dev
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+raw_allowed = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1')
+ALLOWED_HOSTS = [h.strip() for h in raw_allowed.split(',') if h.strip()]
+
+# If running on Render, attempt to automatically include the service hostname
+if any(k in os.environ for k in ('RENDER', 'RENDER_SERVICE_ID', 'RENDER_EXTERNAL_HOSTNAME', 'RENDER_APP_HOSTNAME')):
+    render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME') or os.environ.get('RENDER_APP_HOSTNAME')
+    if not render_host and os.environ.get('RENDER_SERVICE_ID'):
+        render_host = f"{os.environ.get('RENDER_SERVICE_ID')}.onrender.com"
+    if render_host and render_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(render_host)
 
 
 # Application definition
