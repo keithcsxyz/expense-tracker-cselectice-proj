@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: expense-tracker-cselectice-proj
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    startCommand: "gunicorn config.wsgi:application --workers 3 --bind 0.0.0.0:$PORT"
+    autoDeploy: true
+    envVars:
+      - key: DJANGO_DEBUG
+        value: 'False'
+      - key: DJANGO_ALLOWED_HOSTS
+        value: expense-tracker-cselectice-proj.onrender.com
+      - key: DJANGO_SECRET_KEY
+        value: ''
