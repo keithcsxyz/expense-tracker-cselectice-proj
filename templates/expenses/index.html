@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="panel">
+  <div class="row panel-header align-items-start gx-2 gy-2">
+    <div class="col-12 col-md-4 d-flex align-items-start">
+      <a class="btn btn-sm" href="{% url 'expenses:add' %}">+ Add Expense</a>
+    </div>
+    <div class="col-12 col-md-8 d-flex justify-content-md-end">
+      <form method="get" class="filter-form d-flex flex-wrap gap-2 align-items-center justify-content-end">
+        <label class="mb-0 d-flex align-items-center">Month <input class="form-control form-control-sm ms-2" type="month" name="month" value="{{ month }}"></label>
+        <button class="btn btn-sm" type="submit">Filter</button>
+        <a class="btn btn-sm" href="{% url 'expenses:export_csv' %}{% if month %}?month={{ month }}{% endif %}">Export CSV</a>
+      </form>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-borderless expenses mb-0">
+      <thead>
+        <tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for e in expenses %}
+        <tr>
+          <td>{{ e.date }}</td>
+          <td>{{ e.description }}</td>
+          <td>{{ e.get_category_display }}</td>
+          <td>{{ e.amount }}</td>
+          <td class="actions">
+            <a class="small" href="{% url 'expenses:edit' e.pk %}">Edit</a>
+            <a class="small danger" href="{% url 'expenses:delete' e.pk %}">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No expenses yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
